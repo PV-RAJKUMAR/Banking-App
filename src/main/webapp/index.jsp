@@ -46,10 +46,10 @@ background-image: url(https://img.freepik.com/premium-photo/indian-rupee-inr-rup
 <div class="alert alert-info" role="alert">
   Whats New?
   <div class="list-group">
-    <a href="https://canarabank.com/UPLOAD/NewsImage/IOB35722Investors-Presentation-Sep-2022.pd" class="list-group-item list-group-item-action">
+    <a href="#" class="list-group-item list-group-item-action">
 Performance Highlights-Q2 FY 2022-23
     </a>
-    <a href="https://canarabank.com/UPLOAD/NewsImage/IOB21187Press-Release---Q2FY23.pdf" class="list-group-item list-group-item-action">Press Release Q3 FY 2022-22</a>
+    <a href="#" class="list-group-item list-group-item-action">Press Release Q3 FY 2022-22</a>
     <a href="#" class="list-group-item list-group-item-action">Notice-Revision in Debit Card Services Charges w.e.f 13.02.2023</a>
   </div>
 </div>

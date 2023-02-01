@@ -111,7 +111,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/genAccNo", method = RequestMethod.GET)
-    public ModelAndView genAccNo(@RequestParam int userId) {
+    public ModelAndView createAccount(@RequestParam int userId) {
         ModelAndView mv = new ModelAndView("newAccountForm");
         UserModel userModel = userService.get(userId);
         AccountModel accountModel = new AccountModel();
