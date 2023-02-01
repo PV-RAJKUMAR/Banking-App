@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/data/jpa
+       http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+
+    <context:component-scan base-package="com.bankingApp.demo"/>
+
+    <bean id="userDao" class="com.bankingApp.demo.dao.impl.UserDaoImpl"/>
+
+    <bean id="userService" class="com.bankingApp.demo.service.impl.UserServiceImpl"/>
+
+    <bean id="addressDao" class="com.bankingApp.demo.dao.impl.AddressDaoImpl"/>
+
+    <bean id="addressService" class="com.bankingApp.demo.service.impl.AddressServiceImpl"/>
+
+    <bean id="accountDao" class="com.bankingApp.demo.dao.impl.AccountDaoImpl"/>
+
+    <bean id="accountService" class="com.bankingApp.demo.service.impl.AccountServiceImpl"/>
+
+    <bean id="loanDao" class="com.bankingApp.demo.dao.impl.LoanDaoImpl"/>
+
+    <bean id="loanService" class="com.bankingApp.demo.service.impl.LoanServiceImpl"/>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <jpa:repositories base-package="com.bankingApp.demo.repository" entity-manager-factory-ref="emf"/>
+    <bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="packagesToScan" value="com.bankingApp.demo.model"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"/>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/banking_app?allowPublicKeyRetrieval=true&amp;useSSL=false"/>
+        <property name="username" value="rajkumar"/>
+        <property name="password" value="root"/>
+    </bean>
+
+</beans>
