@@ -2,7 +2,6 @@ package com.bankingApp.demo.controller;
 
 
 import com.bankingApp.demo.model.*;
-import com.bankingApp.demo.repository.AddressRepository;
 import com.bankingApp.demo.repository.TransactionRepository;
 import com.bankingApp.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,9 @@ public class UserController {
 
     @Autowired
     TransactionService transactionService;
+
+    @Autowired
+    TransactionRepository transactionRepository;
 
     private static final String loanStatus1 = "processing";
 
@@ -147,7 +149,7 @@ public class UserController {
         ModelAndView mv = new ModelAndView("accountList");
         UserModel userModel = userService.get(userId);
         Set<AccountModel> accountModelSet = accountService.getActiveAccountDetails(userId);
-        List<TransactionModel>transactionModelList=transactionService.listAll();
+        List<TransactionModel>transactionModelList=transactionRepository.findUserTransactionList(userId);
         mv.addObject("transactionModelList",transactionModelList);
         mv.addObject("user", userModel);
         mv.addObject("accountModelList", accountModelSet);
