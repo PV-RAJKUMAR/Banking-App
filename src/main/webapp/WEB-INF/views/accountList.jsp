@@ -78,6 +78,33 @@
 </tbody>
     </table>
     </div>
+<div class="alert alert-primary" role="alert">
+ <h5><b> Transaction Details:</b></h5>
+</div>
+    <div class="alert alert-dark" role="alert">
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th scope="col">Transaction Id</th>
+          <th scope="col">Transaction Type</th>
+          <th scope="col">Account No</th>
+          <th scope="col">Transaction Amount</th>
+          <th scope="col">Transaction Date</th>
+        </tr>
+      </thead>
+      <tbody>
+      <c:forEach var="list" items="${transactionModelList}">
+        <tr>
+          <th scope="row">${list.trscId}</th>
+          <td>${list.mode}</td>
+          <td>${list.accountModel.accountNo}</td>
+          <td>${list.transactAmt}</td>
+          <td>${list.transactDate}</td>
+        </tr>
+    </c:forEach>
+    </tbody>
+        </table>
+        </div>
     </div>
 
 

@@ -90,10 +90,12 @@
             <form:input type="text" class="form-control" id="inputEmail3" placeholder="Balance Amount" path="balanceAmount" readonly="true"/>
           </div>
         </div>
+
+        <form:form method="post" modelAttribute="transact">
         <div class="form-group row">
-                  <label for="inputEmail3" class="col-sm-2 col-form-label" name="depositAmount"><b><i>Enter Amount</i></b></label>
+                  <form:label for="inputEmail3" class="col-sm-2 col-form-label" path="transactAmt"><b><i>Enter Amount</i></b></form:label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="inputEmail3" placeholder="Enter the Amount" name="depositAmount"/>
+                    <form:input type="text" class="form-control" id="inputEmail3" placeholder="Enter the Amount" path="transactAmt"/>
                   </div>
                 </div>
   <div class="form-group row">
@@ -102,6 +104,7 @@
     </div>
   </div>
 
+</form:form>
 </form:form>
 </div>
 </div>

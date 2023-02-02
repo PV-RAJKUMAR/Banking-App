@@ -1,15 +1,10 @@
 package com.bankingApp.demo.controller;
 
 
-import com.bankingApp.demo.model.AccountModel;
-import com.bankingApp.demo.model.AddressModel;
-import com.bankingApp.demo.model.LoanModel;
-import com.bankingApp.demo.model.UserModel;
+import com.bankingApp.demo.model.*;
 import com.bankingApp.demo.repository.AddressRepository;
-import com.bankingApp.demo.service.AccountService;
-import com.bankingApp.demo.service.AddressService;
-import com.bankingApp.demo.service.LoanService;
-import com.bankingApp.demo.service.UserService;
+import com.bankingApp.demo.repository.TransactionRepository;
+import com.bankingApp.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Controller
 @RequestMapping("/user")
@@ -39,6 +32,9 @@ public class UserController {
 
     @Autowired
     LoanService loanService;
+
+    @Autowired
+    TransactionService transactionService;
 
     private static final String loanStatus1 = "processing";
 
@@ -151,6 +147,8 @@ public class UserController {
         ModelAndView mv = new ModelAndView("accountList");
         UserModel userModel = userService.get(userId);
         Set<AccountModel> accountModelSet = accountService.getActiveAccountDetails(userId);
+        List<TransactionModel>transactionModelList=transactionService.listAll();
+        mv.addObject("transactionModelList",transactionModelList);
         mv.addObject("user", userModel);
         mv.addObject("accountModelList", accountModelSet);
         return mv;
@@ -161,23 +159,34 @@ public class UserController {
         ModelAndView mv = new ModelAndView("depositForm");
         UserModel userModel = userService.get(userId);
         AccountModel accountModel = accountService.get(accId);
+        TransactionModel transactionModel = new TransactionModel();
         mv.addObject("user", userModel);
         mv.addObject("account", accountModel);
+        mv.addObject("transact", transactionModel);
         return mv;
     }
 
     @RequestMapping(value = "/deposit", method = RequestMethod.POST)
-    public String deposit(AccountModel accountModel, @RequestParam int userId, @RequestParam int accId, @RequestParam String depositAmount, Model model) {
+    public String deposit(AccountModel accountModel, TransactionModel transactionModel, @RequestParam int userId, @RequestParam int accId, Model model) {
         UserModel userModel = userService.get(userId);
-        accountModel.setBalanceAmount(accountModel.getBalanceAmount() + Float.parseFloat(depositAmount));
+        transactionModel.setUserId(userId);
+        transactionModel.setMode("deposit");
+        transactionModel.setTransactDate(new Date());
+        transactionService.save(transactionModel);
+        List<TransactionModel>transactionModelList=new ArrayList<>();
+        transactionModelList.add(transactionModel);
+        accountModel.setTransactionModelList(transactionModelList);
+        accountModel.setBalanceAmount(accountModel.getBalanceAmount() + Float.parseFloat(String.valueOf(transactionModel.getTransactAmt())));
         accountModel.setAccountId(accId);
         accountModel.setUser(userModel);
         accountService.save(accountModel);
+        transactionModel.setAccountModel(accountModel);
+        transactionService.save(transactionModel);
         Set<AccountModel> accountModelSet = new HashSet<>();
         accountModelSet.add(accountModel);
         userModel.setAccountModelList(accountModelSet);
         userService.save(userModel);
-        model.addAttribute("message", "An amount of INR " + depositAmount + " has been Deposited into your account");
+        model.addAttribute("message", "An amount of INR " + String.valueOf(transactionModel.getTransactAmt()) + " has been Deposited into your account");
         return "success";
     }
 
@@ -186,23 +195,34 @@ public class UserController {
         ModelAndView mv = new ModelAndView("withdrawForm");
         UserModel userModel = userService.get(userId);
         AccountModel accountModel = accountService.get(accId);
+        TransactionModel transactionModel=new TransactionModel();
+        mv.addObject("transact",transactionModel);
         mv.addObject("user", userModel);
         mv.addObject("account", accountModel);
         return mv;
     }
 
     @RequestMapping(value = "/withdraw", method = RequestMethod.POST)
-    public String withdraw(AccountModel accountModel, @RequestParam int userId, @RequestParam int accId, @RequestParam String withdrawalAmount, Model model) {
+    public String withdraw(TransactionModel transactionModel,AccountModel accountModel, @RequestParam int userId, @RequestParam int accId, Model model) {
         UserModel userModel = userService.get(userId);
-        accountModel.setBalanceAmount(accountModel.getBalanceAmount() - Float.parseFloat(withdrawalAmount));
+        accountModel.setBalanceAmount(accountModel.getBalanceAmount() - Float.parseFloat(String.valueOf(transactionModel.getTransactAmt())));
         accountModel.setAccountId(accId);
         accountModel.setUser(userModel);
+        accountService.save(accountModel);
+        transactionModel.setTransactDate(new Date());
+        transactionModel.setMode("withdrawal");
+        transactionModel.setAccountModel(accountModel);
+        transactionModel.setUserId(userId);
+        transactionService.save(transactionModel);
+        List<TransactionModel>transactionModelList=new ArrayList<>();
+        transactionModelList.add(transactionModel);
+        accountModel.setTransactionModelList(transactionModelList);
         accountService.save(accountModel);
         Set<AccountModel> accountModelSet = new HashSet<>();
         accountModelSet.add(accountModel);
         userModel.setAccountModelList(accountModelSet);
         userService.save(userModel);
-        model.addAttribute("message", "An amount of INR " + withdrawalAmount + " has been Withdrawn from your account");
+        model.addAttribute("message", "An amount of INR " + String.valueOf(transactionModel.getTransactAmt()) + " has been Withdrawn from your account");
         return "success";
     }
 
@@ -252,4 +272,6 @@ public class UserController {
         mv.addObject("accountModelList", accountModelSet);
         return mv;
     }
+
+
 }

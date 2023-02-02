@@ -1,6 +1,8 @@
 package com.bankingApp.demo.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "transaction")
@@ -11,10 +13,18 @@ public class TransactionModel {
     private int trscId;
     @Column(name = "user_Id")
     private int userId;
-    @Column(name = "withdraw_amount")
-    private double wdrAmt;
+
+    @Column(name = "transaction_amount")
+    private double transactAmt;
+
+    @Column(name = "transaction_date")
+    private Date transactDate;
+
+    @Column(name = "mode")
+    private String mode;
+
     @ManyToOne
-    @JoinColumn(name = "account_id",referencedColumnName = "account_id")
+    @JoinColumn(name = "account_id", referencedColumnName = "account_id")
     private AccountModel accountModel;
 
     public int getTrscId() {
@@ -33,12 +43,28 @@ public class TransactionModel {
         this.userId = userId;
     }
 
-    public double getWdrAmt() {
-        return wdrAmt;
+    public double getTransactAmt() {
+        return transactAmt;
     }
 
-    public void setWdrAmt(double wdrAmt) {
-        this.wdrAmt = wdrAmt;
+    public void setTransactAmt(double transactAmt) {
+        this.transactAmt = transactAmt;
+    }
+
+    public Date getTransactDate() {
+        return transactDate;
+    }
+
+    public void setTransactDate(Date transactDate) {
+        this.transactDate = transactDate;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 
     public AccountModel getAccountModel() {
